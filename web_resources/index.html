@@ -1,0 +1,315 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>Youtube Spam Comments Filtering</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		
+		  
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="index.html" class="logo"><strong>Team Project</strong> by Jaeyoung,Hyeok,Minsoo</a>
+									<ul class="icons">
+										<li><a href="https://www.instagram.com/min_s36_k" class="icon brands fa-instagram" target="_blank"><span class="label">Instagram</span></a></li>
+									</ul>
+								</header>
+
+							<!-- Banner -->
+								<section id="banner">
+									<div class="content">
+										<header>
+											<h1>Youtube Spam Comments Filtering</h1>
+										</header>
+										<p>Filtering your Youtube video comments!</p>
+									</div>
+									<span class="image object">
+										<img src="img.jpg" alt="" />
+									</span>
+								</section>
+
+							<!-- Section -->
+								<section>
+									<header class="major">
+										<h2>Your Video</h2>
+									</header>
+									<div class="features">
+										<iframe width="800" height="500" src="https://www.youtube.com/embed/Os_heh8vPfs" frameborder="0" 
+										allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
+										style="margin-left: 50px;"></iframe>
+									</div>
+								</section>
+
+							<!-- Section -->
+								<hr class="major" />
+								<h2>Youtube Comments</h2>
+								<table id="content"></table>
+								<script>
+								 // GCS에서 가져올 파일의 정보
+								 const apiKey = 'AIzaSyAnjzUJVi7wdECQrZVHcZ1DW2C-HYwIUUo'; 
+								 const bucketName = 'dbproject_comment';
+								 // GCS에서 CSV 파일을 가져와서 테이블에 표시하는 함수
+								 function getFileFromGCS(fileName) {
+								   const url = `https://storage.googleapis.com/storage/v1/b/${bucketName}/o/${encodeURIComponent(fileName)}?alt=media&key=${apiKey}`;
+								   $.ajax({
+									url: url,
+										type: 'GET',
+										success: function(data) {
+										// CSV 파일을 파싱하여 HTML 테이블로 변환
+										const rows = data.split('\n');
+										let tableHtml = '<table><thead><tr>';
+										const headers = rows[0].split(',');
+										for (let i = 0; i < headers.length; i++) {
+											tableHtml += '<th>' + headers[i] + '</th>';
+										}
+										tableHtml += '</tr></thead><tbody>';
+										for (let i = 1; i < rows.length; i++) {
+											const cells = rows[i].split(',');
+											let rowHtml = '<tr>';
+											for (let j = 0; j < cells.length; j++) {
+											rowHtml += '<td>' + cells[j] + '</td>';
+											}
+											rowHtml += '</tr>';
+											tableHtml += rowHtml;
+										}
+										tableHtml += '</tbody></table>';
+
+										// HTML 테이블을 페이지에 표시
+										$('#content').html(tableHtml);
+										},
+										error: function(xhr, status, error) {
+										console.error('Error fetching file:', error);
+										}
+								   });
+								 }
+							 
+								 
+
+								// GCS에서 버킷의 모든 파일 목록을 가져오는 함수
+								function listFilesInFolder() {
+									const folderName = 'processing_output/';
+									const url = `https://www.googleapis.com/storage/v1/b/${bucketName}/o?key=${apiKey}`;
+									$.ajax({
+										url: url,
+										type: 'GET',
+										success: function(data) {
+											// 'items' 배열에는 버킷의 모든 파일 정보가 들어 있음
+											const items = data.items;
+											for (let i = 0; i < items.length; i++) {
+												const fileName = items[i].name;
+												// 파일 이름이 'processing_output/'로 시작하고 '.csv'로 끝나는지 확인
+												if (fileName.startsWith(folderName) && fileName.endsWith('.csv')) {
+													// CSV 파일을 처리하는 함수
+													getFileFromGCS(fileName);
+												}
+											}
+										},
+										error: function(xhr, status, error) {
+											console.error('Error fetching file list:', error);
+										}
+									});
+								}
+
+								listFilesInFolder();
+
+								// update to get a new comment data
+								setInterval(listFilesInFolder, 5000);
+							   </script>
+
+							<!-- Section -->
+								<section>
+									<header class="major">
+										<h2>Spam Comments Found</h2>
+									</header>
+									<table id="content2"></table>
+									<script>
+									 // GCS에서 가져올 파일의 정보
+									 const apiKey2 = 'AIzaSyAnjzUJVi7wdECQrZVHcZ1DW2C-HYwIUUo'; 
+									 const bucketName2 = 'dbproject_comment';
+	
+								 
+									 // GCS에서 CSV 파일을 가져와서 테이블에 표시하는 함수
+									 function getFileFromGCS2(fileName) {
+									   const url = `https://storage.googleapis.com/storage/v1/b/${bucketName2}/o/${encodeURIComponent(fileName)}?alt=media&key=${apiKey2}`;
+								 
+									   $.ajax({
+										url: url,
+											type: 'GET',
+											success: function(data) {
+											// CSV 파일을 파싱하여 HTML 테이블로 변환
+											const rows = data.split('\n');
+											let tableHtml = '<table><thead><tr>';
+											const headers = rows[0].split(',');
+											for (let i = 0; i < headers.length; i++) {
+												tableHtml += '<th>' + headers[i] + '</th>';
+											}
+											tableHtml += '</tr></thead><tbody>';
+											for (let i = 1; i < rows.length; i++) {
+												const cells = rows[i].split(',');
+												let rowHtml = '<tr>';
+												for (let j = 0; j < cells.length; j++) {
+												rowHtml += '<td>' + cells[j] + '</td>';
+												}
+												rowHtml += '</tr>';
+												tableHtml += rowHtml;
+											}
+											tableHtml += '</tbody></table>';
+	
+											// HTML 테이블을 페이지에 표시
+											$('#content2').html(tableHtml);
+											},
+											error: function(xhr, status, error) {
+											console.error('Error fetching file:', error);
+											}
+									   });
+									 }
+								 
+									 
+	
+									// GCS에서 버킷의 모든 파일 목록을 가져오는 함수
+									function listFilesInFolder2() {
+										const folderName = 'spam_output/';
+										const url = `https://www.googleapis.com/storage/v1/b/${bucketName2}/o?key=${apiKey2}`;
+	
+										$.ajax({
+											url: url,
+											type: 'GET',
+											success: function(data) {
+												// 'items' 배열에는 버킷의 모든 파일 정보가 들어 있음
+												const items = data.items;
+												for (let i = 0; i < items.length; i++) {
+													const fileName = items[i].name;
+													// 파일 이름이 'processing_output/'로 시작하고 '.csv'로 끝나는지 확인
+													if (fileName.startsWith(folderName) && fileName.endsWith('.csv')) {
+														// CSV 파일을 처리하는 함수
+														getFileFromGCS2(fileName);
+													}
+												}
+											},
+											error: function(xhr, status, error) {
+												console.error('Error fetching file list:', error);
+											}
+										});
+									}
+	
+									listFilesInFolder2(); // 페이지 로드시 파일을 불러옴
+	
+									// 파일을 주기적으로 업데이트
+									setInterval(listFilesInFolder2, 5000);
+								   </script>
+								</section>
+							
+							<!-- Section -->
+								<section>
+									<header class="major">
+										<h2>Spam Comments Data</h2>
+									</header>
+									<div class="features">
+										<canvas id="myChart" width="800" height="600"></canvas>
+									</div>
+										<script>
+											function drawChart() {
+												if (myChart) {
+													myChart.destroy();
+												}
+												// var spamData = $('#content2 tr').length;
+												var spamData = $('#content2 tbody tr').length-1;
+												var notspam = $('#content tbody tr').length -1 - spamData;
+										
+												var ctx = document.getElementById('myChart').getContext('2d');
+												var myChart = new Chart(ctx, {
+													type: 'pie', // 원 그래프를 그리기 위해 'pie'를 설정
+													data: {
+														labels: ['Not spam comments', 'Spam Comments'],
+														datasets: [{
+															data: [notspam, spamData],
+															backgroundColor: [
+																'rgba(75, 192, 192, 0.2)',
+																'rgba(255, 99, 132, 0.2)'
+															],
+															borderColor: [
+																'rgba(75, 192, 192, 1)',
+																'rgba(255, 99, 132, 1)'
+															],
+															borderWidth: 1
+														}]
+													},
+													options: {
+														responsive: false // 이것은 차트 크기를 canvas 요소의 크기에 맞추도록 설정
+													}
+												});
+											}
+										// 데이터가 변경될 때마다 원 그래프를 업데이트
+										setInterval(drawChart, 5000);
+										</script>
+								</section>
+						</div>
+					</div>
+
+				<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+
+							<!-- Search -->
+								<section id="search" class="alt">
+									<form method="post" action="#">
+										<input type="text" name="query" id="query" placeholder="Search" />
+									</form>
+								</section>
+
+							<!-- Menu -->
+								<nav id="menu">
+									<header class="major">
+										<h2>Menu</h2>
+									</header>
+									<ul>
+										<li><a href="index.html">Home</a></li>
+										<li>
+											<span class="opener">Other Youtube</span>
+											<ul>
+												<li><a href="video2.html">Youtube 2</a></li>
+											</ul>
+										</li>
+									</ul>
+								</nav>
+
+							<!-- Section -->
+								<section>
+									<header class="major">
+										<h2>Contact us!</h2>
+									</header>
+									<p>If you have a problem contact us!</p>
+									<ul class="contact">
+										<li class="icon solid fa-envelope"><a href="#">example@seoultech.ac.kr</a></li>
+										<li class="icon solid fa-phone">(000) 000-0000</li>
+										<li class="icon solid fa-home">1234 Somewhere Road #8254</li>
+									</ul>
+								</section>
+
+						</div>
+					</div>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>

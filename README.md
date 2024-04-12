@@ -12,7 +12,7 @@
 - 유튜브 영상을 보여줍니다.
 <img width="608" alt="스크린샷 2024-03-25 오전 10 14 59" src="https://github.com/jaeyo03/Youtube-Comment-Filtering/assets/137462767/12e2a83f-71eb-41ed-81f4-fd9110e622f2">
 
-- 악성 댓글 및 통계 자료를 보여줍니다.
+- 해당 영상의 악성 댓글 및 통계 자료를 보여줍니다.
 <img width="1254" alt="스크린샷 2024-03-25 오전 10 15 04" src="https://github.com/jaeyo03/Youtube-Comment-Filtering/assets/137462767/ff6ac917-16c0-4ce2-a06b-de29b71ded56">
 
 

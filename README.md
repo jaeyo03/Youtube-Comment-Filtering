@@ -6,7 +6,7 @@
   </br>
 
 ## 🗂파이프라인 , 🔧사용 기술
-- sms-spam-detection 라이브러리를 사용하여 유튜브 댓글 중 악플을 찾고, 악플 데이터만 구글 스토리지에 저장합니다.
+- sms-spam-detection 라이브러리를 사용하여 유튜브 댓글 중 악플을 찾고, 악플 댓글과 악플이 아닌 댓글 모두 구글 스토리지에 저장합니다.
 <img width="1232" alt="스크린샷 2024-03-25 오전 10 04 25" src="https://github.com/jaeyo03/Youtube-Comment-Filtering/assets/137462767/5110a5f2-b8e7-42bb-9a15-1012d8b67082">
 
 ## 🎉주요 기능
